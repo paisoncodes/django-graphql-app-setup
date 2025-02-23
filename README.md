@@ -10,6 +10,16 @@ Install the package using pip:
 pip install django-app-setup
 ```
 
+Add the following to your `settings.py` file
+
+```bash
+INSTALLED_APPS = [
+    ...
+    "django_graphql_app_setup",
+    ...
+]
+```
+
 ## Usage
 
 In your project directory, run the following command:
