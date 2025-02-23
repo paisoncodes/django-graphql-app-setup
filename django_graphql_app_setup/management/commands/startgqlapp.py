@@ -32,33 +32,33 @@ class Command(StartAppCommand):
                 "mutations": {
                     "__init__.py": "",
                     f"{app_name}_mutations.py": (
-                        "from graphene import Mutation\n\n"
-                        f"class {app_name.capitalize()}Mutation(Mutation):\n"
+                        "import graphene\n\n"
+                        f"class {app_name.capitalize()}Mutation(graphene.Mutation):\n"
                         "    pass\n"
                     ),
                 },
                 "queries": {
                     "__init__.py": "",
                     f"{app_name}_queries.py": (
-                        "from graphene import ObjectType\n\n"
-                        f"class {app_name.capitalize()}Query(ObjectType):\n"
+                        "import graphene\n\n"
+                        f"class {app_name.capitalize()}Query(graphene.ObjectType):\n"
                         "    pass\n"
                     ),
                 },
                 "types": {
                     "__init__.py": "",
                     f"{app_name}_types.py": (
-                        "from graphene import ObjectType, String\n\n"
-                        f"class {app_name.capitalize()}Type(ObjectType):\n"
-                        "    example_field = String()\n"
+                        "import graphene\n\n"
+                        "class ExampleType(graphene.ObjectType):\n"
+                        "    example_field = graphene.String()\n"
                     ),
                 },
                 "inputs": {
                     "__init__.py": "",
                     f"{app_name}_inputs.py": (
-                        "from graphene import InputObjectType, String\n\n"
-                        f"class {app_name.capitalize()}Input(InputObjectType):\n"
-                        "    example_field = String()\n"
+                        "import graphene\n\n"
+                        "class ExampleInput(graphene.InputObjectType):\n"
+                        "    example_field = graphene.String()\n"
                     ),
                 },
             },
