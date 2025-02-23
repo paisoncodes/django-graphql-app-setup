@@ -17,19 +17,10 @@ class Command(StartAppCommand):
     def handle(self, **options):
         # Get the app name and custom directory
         app_name = options["name"]
-        custom_directory = options.get("custom_directory")
+        custom_directory = options.get("custom_directory", None)
 
         # Determine the target directory
-        if custom_directory:
-            target = os.path.join(os.getcwd(), custom_directory, app_name)
-        else:
-            target = os.path.join(os.getcwd(), app_name)
-
-        # Ensure the parent directory exists
-        parent_dir = os.path.dirname(target)
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir, exist_ok=True)
-            self.stdout.write(self.style.SUCCESS(f"Created parent directory: {parent_dir}"))
+        target = os.path.join(os.getcwd(), app_name)
 
         # Call the original startapp command to create the default Django app structure
         super().handle(**options)
@@ -90,7 +81,7 @@ class Command(StartAppCommand):
         self.create_structure(target, schema_structure)
 
         # Determine the app's Python import path
-        app_import_path = self.get_app_import_path(target)
+        app_import_path = self.get_app_import_path(target, custom_directory)
 
         # Update INSTALLED_APPS in settings.py
         self.update_installed_apps(app_import_path)
@@ -116,7 +107,7 @@ class Command(StartAppCommand):
                 with open(path, "w") as f:
                     f.write(content)
 
-    def get_app_import_path(self, target):
+    def get_app_import_path(self, target, directory=None):
         """
         Determine the Python import path for the app based on its location.
         """
@@ -132,7 +123,9 @@ class Command(StartAppCommand):
         # Convert the relative path to a Python import path
         # Replace slashes with dots and remove leading/trailing slashes
         app_import_path = relative_path.replace(os.sep, ".").strip(".")
-
+        if directory:
+            directory = directory.replace("/", ".").strip(".") # Convert slashes to dots
+            app_import_path = f"{directory}.{app_import_path}"
         return app_import_path
 
     def find_settings_path(self):
