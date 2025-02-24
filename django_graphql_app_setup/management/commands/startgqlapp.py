@@ -1,5 +1,6 @@
 import os
 from django.core.management.commands.startapp import Command as StartAppCommand
+from django.conf import settings
 
 
 class Command(StartAppCommand):
@@ -170,19 +171,19 @@ class Command(StartAppCommand):
         )
 
     def update_apps_py(self, target, app_import_path, app_name):
+        """
+        Update the apps.py file of the new app.
+        """
         apps_py_path = os.path.join(target, "apps.py")
-        if not os.path.exists(apps_py_path):
-            return
-
-        with open(apps_py_path, "w") as f:
-            f.write(
-                f"from django.apps import AppConfig\n\n"
-                f"class {app_name.capitalize()}Config(AppConfig):\n"
-                f"    name = '{app_import_path}'\n"
-                f"    label = '{app_name}'\n"
-            )
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Updated {apps_py_path} with name='{app_import_path}' and label='{app_name}'."
-            )
+        default_auto_field = getattr(
+            settings, "DEFAULT_AUTO_FIELD", "django.db.models.BigAutoField"
         )
+        if os.path.exists(apps_py_path):
+            with open(apps_py_path, "w") as f:
+                f.write(
+                    f"from django.apps import AppConfig\n\n"
+                    f"class {app_name.capitalize()}Config(AppConfig):\n"
+                    f"    default_auto_field = '{default_auto_field}'\n"
+                    f"    name = '{app_import_path}'\n"
+                    f"    label = '{app_name}'\n"
+                )
